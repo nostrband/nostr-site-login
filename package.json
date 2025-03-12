@@ -13,7 +13,7 @@
     "twlit:dev": "node twlit.js --watch",
     "build-tw": "tailwindcss -i src/assets/css/index.css -o src/modules/tw/tw.css",
     "build-tw:dev": "tailwindcss -i src/assets/css/index.css -o src/modules/tw/tw.css -w",
-    "build-css": "concurrently \"npm run build-tw\" \"npm run twlit\"",
+    "build-css": "npm run build-tw && npm run twlit",
     "build-css:dev": "concurrently \"npm run build-tw:dev\" \"npm run twlit:dev\"",
     "build": "npm run build-css && rollup -c",
     "dev": "concurrently \"npm run build-css:dev\" \"rollup -c -w\"",
