@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+@layer base {
+  :host {
+    font-family: 'OpenSans', sans-serif;
+    font-size: 16px;
+  }
+}
+
+.ns_login_dialog {
+  @apply fixed shadow-lg rounded-[8px] w-[calc(100%-32px)] max-w-[512px] m-0 left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2 backdrop:bg-black backdrop:bg-opacity-50 backdrop:backdrop-blur-sm animate-slide-in-blurred-top;
+}
+
+.ns_login_dialog_content {
+  @apply bg-white p-[24px] w-full;
+}
+
+.ns_login_dialog_title {
+  @apply text-sm tracking-wide uppercase font-semibold mb-[16px] text-center;
+}
+
+.ns_email_form {
+  @apply flex flex-col gap-[12px];
+}
+
+.ns_email_field_container {
+  @apply flex flex-col gap-[6px];
+}
+
+.ns_email_input {
+  @apply outline-none border-gray-200 border-[1px] rounded-[10px] py-[12px] px-[16px] focus:border-violet-500 transition-colors;
+}
+
+.ns_email_label {
+  @apply self-start;
+}
+
+.ns_email_submit {
+  @apply bg-violet-500 hover:bg-violet-600 w-full h-[40px] text-white rounded-[10px];
+}
+
+.ns_login_loading_container {
+  @apply flex flex-col gap-[12px] items-center;
+}

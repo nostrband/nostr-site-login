@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        min-height: 120vh;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="./dist/index.js"></script>
+    <button id="auth">Need auth</button>
+    <script>
+      const button = document.getElementById('auth')
+      if (button) {
+        button.onclick = function () {
+          const event = new CustomEvent('nlNeedAuth', {
+            detail:
+              'nostrconnect://f27d0b96544bc439a16a5a4b23f8ef4444ee2b036dd241389655ef581b1ef2d2?metadata={"name":"Wherostr","icon":"https://image.nostr.build/3af603a5061f3fa81157ef3e8aefa1e322aa6f61702b832978714d888061ecfa.png","url":"https://wherostr.social"}',
+          })
+          console.log(event)
+          document.dispatchEvent(event)
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "name": "nostr-site-login",
+  "version": "1.0.0",
+  "description": "Nostr Site Login",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "twlit": "node twlit.js",
+    "twlit:dev": "node twlit.js --watch",
+    "build-tw": "tailwindcss -i src/assets/css/index.css -o src/modules/tw/tw.css",
+    "build-tw:dev": "tailwindcss -i src/assets/css/index.css -o src/modules/tw/tw.css -w",
+    "build-css": "concurrently \"npm run build-tw\" \"npm run twlit\"",
+    "build-css:dev": "concurrently \"npm run build-tw:dev\" \"npm run twlit:dev\"",
+    "build": "npm run build-css && rollup -c",
+    "dev": "concurrently \"npm run build-css:dev\" \"rollup -c -w\"",
+    "format": "npx prettier --write src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lit": "^3.2.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/node": "^22.13.10",
+    "@types/yargs": "^17.0.33",
+    "chalk": "^5.4.1",
+    "concurrently": "^9.1.2",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.2",
+    "yargs": "^17.7.2"
+  }
+}
