@@ -3,7 +3,7 @@ import { customElement, property, query, state } from 'lit/decorators.js'
 import { TWStyles } from '../modules/tw/twlit'
 import { Icons } from '../assets/icons'
 
-const NSEC_APP_URL = 'https://use.nsec.app'
+const NSEC_APP_URL = 'https://dev.nsec.app'
 
 @customElement('ns-modal-login')
 export class ModalLogin extends LitElement {

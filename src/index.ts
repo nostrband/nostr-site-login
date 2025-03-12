@@ -11,11 +11,8 @@ function loadFonts() {
 }
 
 async function initListeners() {
-  // if (!window.nostrSite) {
-  //   await new Promise<Event>((ok) => document.addEventListener('npLoad', ok))
-  // } // @NOTE will this code be used?
   document.addEventListener('nlNeedAuth', (e: EventNeedAuth) => {
-    const nostrconnect = e.detail
+    const { nostrconnect } = e.detail
     if (!nostrconnect.startsWith('nostrconnect://')) return
     const modal = document.createElement('ns-modal-login') as ModalLogin
     if (!document.body) return
