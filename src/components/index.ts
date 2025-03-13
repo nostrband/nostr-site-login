@@ -21,6 +21,8 @@ export class ModalLogin extends LitElement {
   @query('#ns-email-field') emailField: HTMLInputElement | undefined
   @state() open = false
   @state() isPending = false
+  @state() isError = false
+  @state() popupWatcher = null
 
   show(): void {
     this.open = true
@@ -28,7 +30,11 @@ export class ModalLogin extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    document.addEventListener('nlAuth', () => this.remove())
+    document.addEventListener('nlAuth', () => {
+      if (this.popupWatcher) clearInterval(this.popupWatcher)
+      this.popupWatcher = null
+      this.remove()
+    })
   }
 
   updated() {
@@ -48,6 +54,9 @@ export class ModalLogin extends LitElement {
     if (this.isPending) return
     document.body.style.overflow = 'initial'
     this.remove()
+
+    // stop the nostr-connect listener
+    document.dispatchEvent(new CustomEvent('nlNeedAuthCancel'))
   }
   private _handleBackdrop(e: Event) {
     if (e.target === this.dialog) this._handleCloseModal()
@@ -58,7 +67,18 @@ export class ModalLogin extends LitElement {
     const enteredEmail = this.emailField.value.trim()
     if (!enteredEmail) return
     const link = `${NSEC_APP_URL}/${this.nostrconnect}#email=${enteredEmail}`
-    window.open(link, '#blank')
+    const popup = window.open(link, '_blank', 'width=400,height=700')
+    if (!popup) console.error('Popup blocked!')
+    // watch if popup closes before we're authed
+    this.popupWatcher = setInterval(() => {
+      if (popup.closed) {
+        this.isError = true
+        console.log('popup closed error')
+        clearInterval(this.popupWatcher)
+        this.popupWatcher = null
+      }
+    }, 100)
+
     this.isPending = true
   }
 
