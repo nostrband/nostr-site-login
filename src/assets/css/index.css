@@ -18,7 +18,7 @@
 }
 
 .ns_login_dialog_title {
-  @apply text-sm tracking-wide uppercase font-semibold mb-[16px] text-center;
+  @apply text-[14px] tracking-wide uppercase font-semibold mb-[16px] text-center;
 }
 
 .ns_email_form {
@@ -43,4 +43,8 @@
 
 .ns_login_loading_container {
   @apply flex flex-col gap-[12px] items-center;
+}
+
+.ns_advanced_sign_in {
+  @apply self-center text-[14px] text-sky-600 hover:underline;
 }

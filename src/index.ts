@@ -1,19 +1,27 @@
 import { EventNeedAuth } from './types'
-import { ModalLogin } from './components'
+import { ModalLogin } from './components/ns-modal-login'
 import './components'
+import './fonts.css'
+import { BannerConfirmEmail } from './components/ns-login-banner'
 
-function loadFonts() {
-  const link = document.createElement('link')
-  link.setAttribute('rel', 'stylesheet')
-  link.setAttribute('type', 'text/css')
-  link.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap')
-  document.head.appendChild(link)
+const BANNER_LS_KEY = 'ns-login-banner-show'
+
+function initBanner() {
+  try {
+    if (localStorage.getItem(BANNER_LS_KEY) !== 'true') return
+    if (document.querySelector('ns-login-banner')) return
+    const banner = document.createElement('ns-login-banner') as BannerConfirmEmail
+    document.body.append(banner)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 async function initListeners() {
   // if (!window.nostrSite) {
   //   await new Promise<Event>((ok) => document.addEventListener('npLoad', ok))
   // } // @NOTE will this code be used?
+
   document.addEventListener('nlNeedAuth', (e: EventNeedAuth) => {
     const nostrconnect = e.detail
     if (!nostrconnect.startsWith('nostrconnect://')) return
@@ -26,7 +34,7 @@ async function initListeners() {
 }
 
 const init = () => {
-  loadFonts()
+  initBanner()
   initListeners()
 }
 
