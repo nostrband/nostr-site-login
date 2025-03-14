@@ -4,15 +4,21 @@ import { BannerConfirmEmail } from './components/ns-login-banner'
 import './components'
 import './fonts.css'
 
+const currentScript = document.currentScript
+
 async function initListeners() {
   document.addEventListener('nlNeedAuth', (e: EventNeedAuth) => {
     const { nostrconnect = '' } = e.detail
     if (!nostrconnect.startsWith('nostrconnect://')) return
     const modal = document.createElement('ns-modal-login') as ModalLogin
     if (!document.body) return
+    const accentColor = currentScript.getAttribute('data-accent-color')
+    const textColor = currentScript.getAttribute('data-text-color')
     document.body.append(modal)
     modal.show()
     modal.nostrconnect = nostrconnect
+    modal.accentColor = accentColor || '#8b5cf6'
+    modal.textColor = textColor || '#ffffff'
   })
 
   document.addEventListener('nlAuth', async (e: CustomEvent) => {
