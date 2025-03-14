@@ -19,7 +19,7 @@ function initBanner() {
 
 async function initListeners() {
   document.addEventListener('nlNeedAuth', (e: EventNeedAuth) => {
-    const { nostrconnect } = e.detail
+    const { nostrconnect = '' } = e.detail
     if (!nostrconnect.startsWith('nostrconnect://')) return
     const modal = document.createElement('ns-modal-login') as ModalLogin
     if (!document.body) return

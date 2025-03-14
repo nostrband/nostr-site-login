@@ -22,6 +22,8 @@ export class ModalLogin extends LitElement {
   @query('#ns-email-field') emailField: HTMLInputElement | undefined
   @state() open = false
   @state() isPending = false
+  @state() isError = false
+  @state() popupWatcher = null
 
   show(): void {
     this.open = true
@@ -30,6 +32,8 @@ export class ModalLogin extends LitElement {
   connectedCallback(): void {
     super.connectedCallback()
     document.addEventListener('nlAuth', () => {
+      if (this.popupWatcher) clearInterval(this.popupWatcher)
+      this.popupWatcher = null
       this.remove()
       const banner = document.createElement('ns-login-banner') as BannerConfirmEmail
       document.body.append(banner)
@@ -46,6 +50,7 @@ export class ModalLogin extends LitElement {
     super.disconnectedCallback()
     this.open = false
     this.isPending = false
+    this.isError = false
     document.body.style.overflow = 'initial'
   }
 
@@ -53,7 +58,11 @@ export class ModalLogin extends LitElement {
     if (this.isPending) return
     document.body.style.overflow = 'initial'
     this.remove()
+
+    // stop the nostr-connect listener
+    document.dispatchEvent(new CustomEvent('nlNeedAuthCancel'))
   }
+
   private _handleBackdrop(e: Event) {
     if (e.target === this.dialog) this._handleCloseModal()
   }
@@ -63,7 +72,18 @@ export class ModalLogin extends LitElement {
     const enteredEmail = this.emailField.value.trim()
     if (!enteredEmail) return
     const link = `${NSEC_APP_URL}/${this.nostrconnect}#email=${enteredEmail}`
-    window.open(link, '#blank')
+    const popup = window.open(link, '_blank', 'width=400,height=700')
+    if (!popup) console.error('Popup blocked!')
+    // watch if popup closes before we're authed
+    this.popupWatcher = setInterval(() => {
+      if (popup.closed) {
+        this.isError = true
+        console.log('popup closed error')
+        clearInterval(this.popupWatcher)
+        this.popupWatcher = null
+      }
+    }, 100)
+
     this.isPending = true
   }
 
@@ -91,6 +111,19 @@ export class ModalLogin extends LitElement {
     </div>`
   }
 
+  private renderError() {
+    return html`<div class="ns_login_loading_container">
+      <span class="text-[18px] py-[12px]">Error: failed to complete sign-in</span>
+      <button class="ns_login_close_btn" type"button" @click=${this._handleCloseModal}>Close</button>
+    </div>`
+  }
+
+  private renderContent() {
+    if (this.isError) return this.renderError()
+    if (this.isPending) return this.renderLoading()
+    return this.renderForm()
+  }
+
   render() {
     return html`
       <dialog
@@ -103,7 +136,7 @@ export class ModalLogin extends LitElement {
       >
         <div class="ns_login_dialog_content">
           <h2 class="ns_login_dialog_title" id="ns-login-modal-title">Sign in to proceed</h2>
-          ${this.isPending ? this.renderLoading() : this.renderForm()}
+          ${this.renderContent()}
         </div>
       </dialog>
     `
