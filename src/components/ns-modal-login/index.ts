@@ -18,6 +18,8 @@ export class ModalLogin extends LitElement {
   ]
 
   @property({ type: String }) nostrconnect = ''
+  @property({ type: String }) accentColor = '#8b5cf6'
+  @property({ type: String }) textColor = '#ffffff'
   @query('#ns-login-dialog') dialog: HTMLDialogElement | undefined
   @query('#ns-email-field') emailField: HTMLInputElement | undefined
   @state() open = false
@@ -97,9 +99,9 @@ export class ModalLogin extends LitElement {
     return html` <form class="ns_email_form" @submit=${this._handleSubmit}>
       <div class="ns_email_field_container">
         <label class="ns_email_label" for="ns-email-field">E-mail address</label>
-        <input class="ns_email_input" type="email" id="ns-email-field" placeholder="Enter your e-mail address" />
+        <input style="--accentColor: ${this.accentColor};" class="ns_email_input focus:border-[var(--accentColor)]" type="email" id="ns-email-field" placeholder="Enter your e-mail address" />
       </div>
-      <button class="ns_email_submit" type"submit">Login</button>
+      <button class="ns_email_submit" style="color: ${this.textColor}; background-color: ${this.accentColor}" type"submit">Login</button>
       <a href="/" @click=${this._handleAdvancedSignIn} class="ns_advanced_sign_in">Advanced sign-in</a>
     </form>`
   }

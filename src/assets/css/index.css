@@ -38,7 +38,7 @@
 }
 
 .ns_email_submit {
-  @apply bg-violet-500 hover:bg-violet-600 w-full h-[40px] text-white rounded-[10px];
+  @apply w-full h-[40px] rounded-[10px] hover:opacity-95 active:translate-y-[1px];
 }
 
 .ns_login_loading_container {
