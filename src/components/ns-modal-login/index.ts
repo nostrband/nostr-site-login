@@ -2,9 +2,8 @@ import { LitElement, css, html } from 'lit'
 import { customElement, property, query, state } from 'lit/decorators.js'
 import { TWStyles } from '../../modules/tw/twlit'
 import { Icons } from '../../assets/icons'
-import { BannerConfirmEmail } from '../ns-login-banner'
 
-const NSEC_APP_URL = 'https://use.nsec.app'
+const NSEC_APP_URL = 'http://dev.nsec.app'
 
 @customElement('ns-modal-login')
 export class ModalLogin extends LitElement {
@@ -35,8 +34,6 @@ export class ModalLogin extends LitElement {
       if (this.popupWatcher) clearInterval(this.popupWatcher)
       this.popupWatcher = null
       this.remove()
-      const banner = document.createElement('ns-login-banner') as BannerConfirmEmail
-      document.body.append(banner)
     })
   }
 
@@ -77,6 +74,7 @@ export class ModalLogin extends LitElement {
     // watch if popup closes before we're authed
     this.popupWatcher = setInterval(() => {
       if (popup.closed) {
+        this.isPending = false
         this.isError = true
         console.log('popup closed error')
         clearInterval(this.popupWatcher)
@@ -89,18 +87,18 @@ export class ModalLogin extends LitElement {
 
   private _handleAdvancedSignIn(e: MouseEvent) {
     e.preventDefault()
-    document.dispatchEvent(new CustomEvent('nlLaunch'))
+    document.dispatchEvent(new CustomEvent('nlLaunch', { detail: "default" }))
     this.remove()
   }
 
   private renderForm() {
     return html` <form class="ns_email_form" @submit=${this._handleSubmit}>
       <div class="ns_email_field_container">
-        <label class="ns_email_label" for="ns-email-field">E-mail address</label>
-        <input class="ns_email_input" type="email" id="ns-email-field" placeholder="Enter your e-mail address" />
+        <!--label class="ns_email_label" for="ns-email-field">E-mail address</label-->
+        <input class="ns_email_input" type="email" id="ns-email-field" placeholder="E-mail or Nostr address" />
       </div>
-      <button class="ns_email_submit" type"submit">Login</button>
-      <a href="/" @click=${this._handleAdvancedSignIn} class="ns_advanced_sign_in">Advanced sign-in</a>
+      <button class="ns_email_submit" type"submit">Sign in</button>
+      <a href="/" @click=${this._handleAdvancedSignIn} class="ns_advanced_sign_in">Advanced</a>
     </form>`
   }
 

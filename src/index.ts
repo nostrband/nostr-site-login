@@ -4,19 +4,6 @@ import { BannerConfirmEmail } from './components/ns-login-banner'
 import './components'
 import './fonts.css'
 
-const BANNER_LS_KEY = 'ns-login-banner-show'
-
-function initBanner() {
-  try {
-    if (localStorage.getItem(BANNER_LS_KEY) !== 'true') return
-    if (document.querySelector('ns-login-banner')) return
-    const banner = document.createElement('ns-login-banner') as BannerConfirmEmail
-    document.body.append(banner)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 async function initListeners() {
   document.addEventListener('nlNeedAuth', (e: EventNeedAuth) => {
     const { nostrconnect = '' } = e.detail
@@ -27,10 +14,40 @@ async function initListeners() {
     modal.show()
     modal.nostrconnect = nostrconnect
   })
+
+  document.addEventListener('nlAuth', async (e: CustomEvent) => {
+    if (e.detail.type === 'logout') {
+      document.querySelector('ns-login-banner')?.remove()
+    } else {
+      if (document.querySelector('ns-login-banner')) return
+
+      // @ts-ignore
+      const ns = window.nostrSite!
+      await ns.tabReady
+      const profiles = await ns.renderer.fetchProfiles([e.detail.pubkey])
+      // console.log('login profile', profiles)
+      if (profiles.length) {
+        const p = profiles[0]
+        const c = p.event.tags.find((t) => t.length > 1 && t[0] === 'created')?.[1]
+        const r = p.event.tags.find((t) => t.length > 1 && t[0] === 'r')?.[1]
+        // console.log({ c, r })
+        // user signed up recently on our site with email
+        if (c && r && Number(c) * 1000 > Date.now() - 7 * 24 * 3600 * 1000 && r === window.location.origin) {
+          const label = await ns.renderer.fetchEvent(
+            { authors: [p.pubkey], kinds: [1985], '#l': ['complete', 'app.nsec'] },
+            { outboxRelays: true }
+          )
+          if (!label) {
+            const banner = document.createElement('ns-login-banner') as BannerConfirmEmail
+            document.body.append(banner)
+          }
+        }
+      }
+    }
+  })
 }
 
 const init = () => {
-  initBanner()
   initListeners()
 }
 

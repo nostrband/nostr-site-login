@@ -32,7 +32,7 @@ export class BannerConfirmEmail extends LitElement {
           class="
             flex items-center justify-between gap-[12px]
             bg-yellow-100 border border-yellow-400 text-yellow-800 px-[16px] py-[12px]
-            rounded shadow 
+            rounded-lg shadow
             ${this.isClosing ? 'animate-slide-out' : 'animate-slide-in'}
           "
           role="alert"
