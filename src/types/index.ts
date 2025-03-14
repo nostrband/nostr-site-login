@@ -1,1 +1,1 @@
-export type EventNeedAuth = CustomEvent<string>
+export type EventNeedAuth = CustomEvent<{ nostrconnect: string }>

@@ -1,8 +1,8 @@
 import { EventNeedAuth } from './types'
 import { ModalLogin } from './components/ns-modal-login'
+import { BannerConfirmEmail } from './components/ns-login-banner'
 import './components'
 import './fonts.css'
-import { BannerConfirmEmail } from './components/ns-login-banner'
 
 const BANNER_LS_KEY = 'ns-login-banner-show'
 
@@ -18,12 +18,8 @@ function initBanner() {
 }
 
 async function initListeners() {
-  // if (!window.nostrSite) {
-  //   await new Promise<Event>((ok) => document.addEventListener('npLoad', ok))
-  // } // @NOTE will this code be used?
-
   document.addEventListener('nlNeedAuth', (e: EventNeedAuth) => {
-    const nostrconnect = e.detail
+    const { nostrconnect } = e.detail
     if (!nostrconnect.startsWith('nostrconnect://')) return
     const modal = document.createElement('ns-modal-login') as ModalLogin
     if (!document.body) return
