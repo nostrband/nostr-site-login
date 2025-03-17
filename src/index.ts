@@ -1,10 +1,13 @@
 import { EventNeedAuth } from './types'
 import { ModalLogin } from './components/ns-modal-login'
 import { BannerConfirmEmail } from './components/ns-login-banner'
+import { ModalWelcome } from './components/ns-modal-welcome'
 import './components'
 import './fonts.css'
 
 const currentScript = document.currentScript
+const accentColor = currentScript.getAttribute('data-accent-color')
+const textColor = currentScript.getAttribute('data-text-color')
 
 async function initListeners() {
   document.addEventListener('nlNeedAuth', (e: EventNeedAuth) => {
@@ -12,8 +15,6 @@ async function initListeners() {
     if (!nostrconnect.startsWith('nostrconnect://')) return
     const modal = document.createElement('ns-modal-login') as ModalLogin
     if (!document.body) return
-    const accentColor = currentScript.getAttribute('data-accent-color')
-    const textColor = currentScript.getAttribute('data-text-color')
     document.body.append(modal)
     modal.show()
     modal.nostrconnect = nostrconnect
@@ -27,7 +28,6 @@ async function initListeners() {
     } else {
       if (document.querySelector('ns-login-banner')) return
 
-      // @ts-ignore
       const ns = window.nostrSite!
       await ns.tabReady
       const profiles = await ns.renderer.fetchProfiles([e.detail.pubkey])
@@ -53,8 +53,28 @@ async function initListeners() {
   })
 }
 
+const SIGN_UP_COMPLETE_HASH_KEY = '#email-signup-complete'
+
+function initWelcomeModal() {
+  try {
+    const hashParams = new URLSearchParams(window.location.hash)
+    const isSignUpCompelete = hashParams.get(SIGN_UP_COMPLETE_HASH_KEY) === 'true'
+    if (!isSignUpCompelete) return
+    const urlWithoutHash = `${window.location.pathname}${window.location.search}`
+    history.replaceState(null, '', urlWithoutHash)
+    const modal = document.createElement('ns-modal-welcome') as ModalWelcome
+    modal.show()
+    modal.accentColor = accentColor || '#8b5cf6'
+    modal.textColor = textColor || '#ffffff'
+    document.body.append(modal)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const init = () => {
   initListeners()
+  initWelcomeModal()
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init())
