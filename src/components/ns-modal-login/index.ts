@@ -89,7 +89,7 @@ export class ModalLogin extends LitElement {
 
   private _handleAdvancedSignIn(e: MouseEvent) {
     e.preventDefault()
-    document.dispatchEvent(new CustomEvent('nlLaunch', { detail: "default" }))
+    document.dispatchEvent(new CustomEvent('nlLaunch', { detail: 'default' }))
     this.remove()
   }
 
